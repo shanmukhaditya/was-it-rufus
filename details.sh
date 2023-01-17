@@ -12,6 +12,11 @@ fi
 
 cd "$1"
 
+if ! git rev-parse --is-inside-work-tree &> /dev/null ; then
+    echo "Please provide valid git repository address"
+    exit 1
+fi
+
 branch=$(git branch --show-current)
 echo active branch: $branch
 
@@ -21,7 +26,7 @@ else
     echo "local changes: True"
 fi
 
-commits=$(git log --since="1 week ago" --pretty=format:"%H" | awk 'END {print NR}')
+commits=$(git log --since="1 week ago" -1 --pretty=format:"%H" | awk 'END {print NR}')
 if [ $commits -gt 0 ]; then
     echo "recent commit: True"
 else
